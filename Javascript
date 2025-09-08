@@ -1,0 +1,142 @@
+// Create floating flowers in the background
+document.addEventListener('DOMContentLoaded', function() {
+    const floralBg = document.getElementById('floral-bg');
+    const flowerSymbols = ['✿', '❀', '✾', '❁', '✽', '⚘', '🌺', '🌻', '🌼', '🌷', '🌸'];
+    
+    for (let i = 0; i < 25; i++) {
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        flower.innerHTML = flowerSymbols[Math.floor(Math.random() * flowerSymbols.length)];
+        
+        // Random position
+        flower.style.left = Math.random() * 100 + 'vw';
+        
+        // Random size
+        const size = Math.random() * 20 + 15;
+        flower.style.fontSize = size + 'px';
+        
+        // Random color from pink palette
+        const colors = ['#e75480', '#ffb6c1', '#ff69b4', '#ff1493', '#db7093'];
+        flower.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Random animation duration
+        const duration = Math.random() * 10 + 10;
+        flower.style.animationDuration = duration + 's';
+        
+        // Random delay
+        flower.style.animationDelay = Math.random() * 5 + 's';
+        
+        floralBg.appendChild(flower);
+    }
+    
+    // Scroll animations for sections
+    const sections = document.querySelectorAll('section');
+    const projectCards = document.querySelectorAll('.project-card');
+    const skills = document.querySelectorAll('.skill');
+    
+    // Check if element is in viewport
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+    
+    // Check elements on scroll
+    function checkScroll() {
+        sections.forEach(section => {
+            if (isInViewport(section)) {
+                section.classList.add('visible');
+            }
+        });
+        
+        projectCards.forEach((card, index) => {
+            if (isInViewport(card)) {
+                // Stagger the animation with a delay based on index
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, index * 200);
+            }
+        });
+        
+        skills.forEach((skill, index) => {
+            if (isInViewport(skill)) {
+                // Stagger the animation with a delay based on index
+                setTimeout(() => {
+                    skill.classList.add('visible');
+                }, index * 100);
+            }
+        });
+    }
+    
+    // Initial check
+    checkScroll();
+    
+    // Check on scroll
+    window.addEventListener('scroll', checkScroll);
+    
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            window.scrollTo({
+                top: targetSection.offsetTop - 20,
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    // Form submission handling
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Simple validation
+            if (!name || !email || !message) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // In a real application, you would send this data to a server
+            // For this example, we'll just show a success message
+            alert(`Thank you for your message, ${name}! I'll get back to you soon.`);
+            
+            // Reset the form
+            contactForm.reset();
+        });
+    }
+    
+    // Add hover effect to project cards
+    projectCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+            this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+        });
+    });
+});
